@@ -1,5 +1,5 @@
 (function(window){
-/*! steroids-js - v0.3.7 - 2013-02-25 */
+/*! steroids-js - v0.3.8 - 2013-03-07 */
 ;var Bridge,
   __bind = function(fn, me){ return function(){ return fn.apply(me, arguments); }; };
 
@@ -159,7 +159,7 @@ AndroidBridge = (function(_super) {
   __extends(AndroidBridge, _super);
 
   function AndroidBridge() {
-    AndroidAPIBridge.registerHandler("Steroids.nativeBridge.message_handler");
+    AndroidAPIBridge.registerHandler("steroids.nativeBridge.message_handler");
     window.AG_SCREEN_ID = AndroidAPIBridge.getAGScreenId();
     window.AG_LAYER_ID = AndroidAPIBridge.getAGLayerId();
     window.AG_VIEW_ID = AndroidAPIBridge.getAGViewId();
@@ -626,6 +626,20 @@ LayerCollection = (function() {
     return steroids.nativeBridge.nativeCall({
       method: "popLayer",
       successCallbacks: [defaultOnSuccess, callbacks.onSuccess],
+      failureCallbacks: [callbacks.onFailure]
+    });
+  };
+
+  LayerCollection.prototype.popAll = function(options, callbacks) {
+    if (options == null) {
+      options = {};
+    }
+    if (callbacks == null) {
+      callbacks = {};
+    }
+    return steroids.nativeBridge.nativeCall({
+      method: "popAllLayers",
+      successCallbacks: [callbacks.onSuccess],
       failureCallbacks: [callbacks.onFailure]
     });
   };
@@ -1506,7 +1520,7 @@ OpenURL = (function() {
 })();
 ;
 window.steroids = {
-  version: "0.3.7",
+  version: "0.3.8",
   Animation: Animation,
   XHR: XHR,
   File: File,
