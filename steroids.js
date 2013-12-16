@@ -1,4 +1,4 @@
-/*! steroids-js - v3.1.0 - 2013-12-04 14:58 */
+/*! steroids-js - v3.1.1 - 2013-12-16 16:05 */
 (function(window){
 var Bridge,
   __bind = function(fn, me){ return function(){ return fn.apply(me, arguments); }; };
@@ -518,6 +518,11 @@ Events = (function() {
     }
     if (callbacks == null) {
       callbacks = {};
+    }
+    if (!navigator.userAgent.match(/Android/i)) {
+      steroids.markComponentReady("Events.initialVisibility");
+      steroids.markComponentReady("Events.focuslisteners");
+      return;
     }
     this.initializeVisibilityState();
     this.checkInitialVisibility();
@@ -2299,9 +2304,9 @@ XHR = (function() {
 Analytics = (function() {
   function Analytics() {}
 
-  Analytics.prototype.recordEvent = function(options, callbacks) {
-    if (options == null) {
-      options = {};
+  Analytics.prototype.track = function(event, callbacks) {
+    if (event == null) {
+      event = {};
     }
     if (callbacks == null) {
       callbacks = {};
@@ -2310,7 +2315,7 @@ Analytics = (function() {
       method: "recordEvent",
       parameters: {
         type: "custom",
-        attributes: options.event
+        attributes: event
       },
       successCallbacks: [callbacks.onSuccess],
       failureCallbacks: [callbacks.onFailure]
@@ -2545,7 +2550,7 @@ PostMessage = (function() {
 
 }).call(this);
 ;window.steroids = {
-  version: "3.1.0",
+  version: "3.1.1",
   Animation: Animation,
   XHR: XHR,
   File: File,
