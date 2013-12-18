@@ -1,4 +1,4 @@
-/*! steroids-js - v3.1.1 - 2013-12-16 16:05 */
+/*! steroids-js - v3.1.2 - 2013-12-18 15:58 */
 (function(window){
 var Bridge,
   __bind = function(fn, me){ return function(){ return fn.apply(me, arguments); }; };
@@ -415,7 +415,9 @@ TizenBridge = (function(_super) {
   }
 
   TizenBridge.isUsable = function() {
-    return navigator.userAgent.indexOf("Tizen") !== -1;
+    var userAgentHasTizen;
+    userAgentHasTizen = navigator.userAgent.indexOf("Tizen") !== -1;
+    return (window.tizen != null) || userAgentHasTizen;
   };
 
   TizenBridge.prototype.sendMessageToNative = function(messageString) {
@@ -2550,7 +2552,7 @@ PostMessage = (function() {
 
 }).call(this);
 ;window.steroids = {
-  version: "3.1.1",
+  version: "3.1.2",
   Animation: Animation,
   XHR: XHR,
   File: File,
