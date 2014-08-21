@@ -3484,10 +3484,15 @@ PostMessage = (function() {
   return PostMessage;
 
 }).call(this);
+<<<<<<< HEAD
 ;var _this = this;
 
 window.steroids = {
   version: "3.5.1",
+=======
+;window.steroids = {
+  version: "3.5.0",
+>>>>>>> 195fbd99330d0d1bc2912b815b120fae70ec7915
   Animation: Animation,
   File: File,
   views: {
