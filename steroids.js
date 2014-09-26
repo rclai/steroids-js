@@ -1,4 +1,4 @@
-/*! steroids-js - v3.5.3 - 2014-09-22 16:07 */
+/*! steroids-js - v3.5.4 - 2014-09-26 17:15 */
 (function(window){
 var Bridge,
   __bind = function(fn, me){ return function(){ return fn.apply(me, arguments); }; };
@@ -1778,6 +1778,21 @@ NavigationBar = (function() {
     this.buttonTapped = __bind(this.buttonTapped, this);
   }
 
+  NavigationBar.prototype.tapButton = function(options, callbacks) {
+    if (options == null) {
+      options = {};
+    }
+    if (callbacks == null) {
+      callbacks = {};
+    }
+    return steroids.nativeBridge.nativeCall({
+      method: "navigationBarTapButton",
+      parameters: options,
+      successCallbacks: [callbacks.onSuccess],
+      failureCallbacks: [callbacks.onFailure]
+    });
+  };
+
   NavigationBar.prototype.hide = function(options, callbacks) {
     if (options == null) {
       options = {};
@@ -3270,6 +3285,21 @@ Screen = (function() {
     });
   };
 
+  Screen.prototype.dismissNextAlert = function(options, callbacks) {
+    if (options == null) {
+      options = {};
+    }
+    if (callbacks == null) {
+      callbacks = {};
+    }
+    return steroids.nativeBridge.nativeCall({
+      method: "dismissNextAlert",
+      parameters: options,
+      successCallbacks: [callbacks.onSuccess],
+      failureCallbacks: [callbacks.onFailure]
+    });
+  };
+
   Screen.mapDegreesToOrientations = function(degrees) {
     if (degrees === 0 || degrees === "0") {
       return "portrait";
@@ -3577,7 +3607,7 @@ PostMessage = (function() {
 ;var _this = this;
 
 window.steroids = {
-  version: "3.5.3",
+  version: "3.5.4",
   Animation: Animation,
   File: File,
   views: {
