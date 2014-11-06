@@ -1,4 +1,4 @@
-/*! steroids-js - v3.5.6 - 2014-11-06 14:16 */
+/*! steroids-js - v3.5.7 - 2014-11-06 14:51 */
 (function(window){
 var Bridge,
   __bind = function(fn, me){ return function(){ return fn.apply(me, arguments); }; };
@@ -3803,7 +3803,7 @@ PostMessage = (function() {
 ;var _this = this;
 
 window.steroids = {
-  version: "3.5.6",
+  version: "3.5.7",
   Animation: Animation,
   File: File,
   views: {
