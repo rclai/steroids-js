@@ -1,4 +1,4 @@
-/*! steroids-js - v3.5.8 - 2014-11-19 14:54 */
+/*! steroids-js - v3.5.8 - 2014-12-19 13:36 */
 (function(window){
 var Bridge,
   __bind = function(fn, me){ return function(){ return fn.apply(me, arguments); }; };
@@ -516,7 +516,6 @@ JSCoreBridge = (function(_super) {
 
   function JSCoreBridge() {
     this.message_handler = __bind(this.message_handler, this);
-    this.executeInWebThread = __bind(this.executeInWebThread, this);
     return true;
   }
 
@@ -542,19 +541,12 @@ JSCoreBridge = (function(_super) {
     return message;
   };
 
-  JSCoreBridge.prototype.executeInWebThread = function(msg) {
+  JSCoreBridge.prototype.message_handler = function(msg) {
     if ((msg != null ? msg.callback : void 0) != null) {
       if (this.callbacks[msg.callback] != null) {
         return this.callbacks[msg.callback].call(msg.parameters, msg.parameters);
       }
     }
-  };
-
-  JSCoreBridge.prototype.message_handler = function(msg) {
-    var _this = this;
-    return setTimeout(function() {
-      return _this.executeInWebThread(msg);
-    }, 1);
   };
 
   return JSCoreBridge;
