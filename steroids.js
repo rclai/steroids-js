@@ -12,7 +12,7 @@ Bridge = (function() {
 
   Bridge.getBestNativeBridge = function() {
     var bridgeClass, prioritizedList, _i, _len;
-    prioritizedList = [FreshAndroidBridge, TizenBridge, WebBridge, AndroidBridge, WebsocketBridge, JSCoreBridge];
+    prioritizedList = [FreshAndroidBridge, AndroidBridge, JSCoreBridge];
     if (this.bestNativeBridge == null) {
       for (_i = 0, _len = prioritizedList.length; _i < _len; _i++) {
         bridgeClass = prioritizedList[_i];
@@ -2899,200 +2899,6 @@ Audio = (function() {
   return Audio;
 
 })();
-;var OAuth2Flow;
-
-OAuth2Flow = (function() {
-  function OAuth2Flow(options) {
-    this.options = options != null ? options : {};
-    this.options.callbackUrl = "http://localhost:13101/" + this.options.callbackPath;
-  }
-
-  OAuth2Flow.prototype.authenticate = function() {
-    throw "ERROR: " + this.name + " has not overridden authenticate method";
-  };
-
-  OAuth2Flow.prototype.concatenateUrlParams = function(params) {
-    var first, key, result, value;
-    first = true;
-    result = "";
-    for (key in params) {
-      value = params[key];
-      if (first) {
-        result = result.concat("?");
-        first = false;
-      } else {
-        result = result.concat("&");
-      }
-      result = result.concat("" + key + "=" + (encodeURIComponent(value)));
-    }
-    return result;
-  };
-
-  OAuth2Flow.prototype.urlEncode = function(string) {
-    var c, hex, i, reserved_chars, str_len, string_arr;
-    hex = function(code) {
-      var result;
-      result = code.toString(16).toUpperCase();
-      if (result.length < 2) {
-        result = 0 + result;
-      }
-      return "%" + result;
-    };
-    if (!string) {
-      return "";
-    }
-    string = string + "";
-    reserved_chars = /[ \r\n!*"'();:@&=+$,\/?%#\[\]<>{}|`^\\\u0080-\uffff]/;
-    str_len = string.length;
-    i = void 0;
-    string_arr = string.split("");
-    c = void 0;
-    i = 0;
-    while (i < str_len) {
-      if (c = string_arr[i].match(reserved_chars)) {
-        c = c[0].charCodeAt(0);
-        if (c < 128) {
-          string_arr[i] = hex(c);
-        } else if (c < 2048) {
-          string_arr[i] = hex(192 + (c >> 6)) + hex(128 + (c & 63));
-        } else if (c < 65536) {
-          string_arr[i] = hex(224 + (c >> 12)) + hex(128 + ((c >> 6) & 63)) + hex(128 + (c & 63));
-        } else {
-          if (c < 2097152) {
-            string_arr[i] = hex(240 + (c >> 18)) + hex(128 + ((c >> 12) & 63)) + hex(128 + ((c >> 6) & 63)) + hex(128 + (c & 63));
-          }
-        }
-      }
-      i++;
-    }
-    return string_arr.join("");
-  };
-
-  return OAuth2Flow;
-
-})();
-;var AuthorizationCodeFlow, _ref,
-  __bind = function(fn, me){ return function(){ return fn.apply(me, arguments); }; },
-  __hasProp = {}.hasOwnProperty,
-  __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
-
-AuthorizationCodeFlow = (function(_super) {
-  __extends(AuthorizationCodeFlow, _super);
-
-  function AuthorizationCodeFlow() {
-    this.finish = __bind(this.finish, this);
-    this.authenticate = __bind(this.authenticate, this);
-    _ref = AuthorizationCodeFlow.__super__.constructor.apply(this, arguments);
-    return _ref;
-  }
-
-  AuthorizationCodeFlow.prototype.authenticate = function() {
-    var authenticationLayer, authorizationUrl;
-    this.xhrAuthorizationParams = {
-      response_type: "code",
-      client_id: this.options.clientID,
-      redirect_uri: this.options.callbackUrl,
-      scope: this.options.scope || ""
-    };
-    authorizationUrl = this.options.authorizationUrl.concat(this.concatenateUrlParams(this.xhrAuthorizationParams));
-    authenticationLayer = new steroids.views.WebView({
-      location: authorizationUrl
-    });
-    return steroids.modal.show({
-      view: authenticationLayer
-    });
-  };
-
-  AuthorizationCodeFlow.prototype.finish = function(callback) {
-    var body, key, request, value, _ref1,
-      _this = this;
-    this.xhrAccessTokenParams = {
-      client_id: this.options.clientID,
-      client_secret: this.options.clientSecret,
-      redirect_uri: this.options.callbackUrl,
-      grant_type: "authorization_code"
-    };
-    request = new XMLHttpRequest();
-    request.open("POST", this.options.accessTokenUrl);
-    body = [];
-    _ref1 = this.xhrAccessTokenParams;
-    for (key in _ref1) {
-      value = _ref1[key];
-      body.push("" + key + "=" + (this.urlEncode(value)));
-    }
-    body.push("code=" + steroids.view.params['code']);
-    body = body.sort().join('&');
-    request.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
-    request.onreadystatechange = function() {
-      var responseJSON;
-      if (request.readyState === 4) {
-        responseJSON = JSON.parse(request.responseText);
-        callback(responseJSON.access_token);
-        return steroids.modal.hide();
-      }
-    };
-    return request.send(body);
-  };
-
-  return AuthorizationCodeFlow;
-
-})(OAuth2Flow);
-;var ClientCredentialsFlow, _ref,
-  __hasProp = {}.hasOwnProperty,
-  __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
-
-ClientCredentialsFlow = (function(_super) {
-  __extends(ClientCredentialsFlow, _super);
-
-  function ClientCredentialsFlow() {
-    _ref = ClientCredentialsFlow.__super__.constructor.apply(this, arguments);
-    return _ref;
-  }
-
-  ClientCredentialsFlow.prototype.authenticate = function(callback) {
-    var body, key, request, value, _ref1,
-      _this = this;
-    this.xhrAccessTokenParams = {
-      client_id: this.options.clientID,
-      client_secret: this.options.clientSecret,
-      scope: this.options.scope || "",
-      grant_type: "client_credentials"
-    };
-    request = new XMLHttpRequest();
-    request.open("POST", this.options.accessTokenUrl);
-    body = [];
-    _ref1 = this.xhrAccessTokenParams;
-    for (key in _ref1) {
-      value = _ref1[key];
-      body.push("" + key + "=" + (this.urlEncode(value)));
-    }
-    body = body.sort().join('&');
-    request.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
-    request.onreadystatechange = function() {
-      var responseJSON;
-      if (request.readyState === 4) {
-        responseJSON = JSON.parse(request.responseText);
-        return callback(responseJSON.access_token);
-      }
-    };
-    return request.send(body);
-  };
-
-  return ClientCredentialsFlow;
-
-})(OAuth2Flow);
-;var OAuth2;
-
-OAuth2 = (function() {
-  function OAuth2() {}
-
-  OAuth2.AuthorizationCodeFlow = AuthorizationCodeFlow;
-
-  OAuth2.ClientCredentialFlow = ClientCredentialsFlow;
-
-  return OAuth2;
-
-})();
 ;var RSS;
 
 RSS = (function() {
@@ -3857,8 +3663,7 @@ window.steroids = {
   data: {
     SQLiteDB: SQLiteDB,
     TouchDB: TouchDB,
-    RSS: RSS,
-    OAuth2: OAuth2
+    RSS: RSS
   },
   openURL: OpenURL.open,
   eventCallbacks: {},
